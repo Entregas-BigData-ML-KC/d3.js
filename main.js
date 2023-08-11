@@ -43,10 +43,12 @@ let yAxisGroup = axisGroup
 
 let ManX = ""
 let ManY = 0
-let MinX = ""
+let MinX = Date.now()
 let MinY = 999999999999999
 d3.csv("data/ibex.csv").then(data => {
     data.map((d, index) => {
+
+      d.date = Date.parse(d.date)  
 
       if(d.date<MinX){
             MinX = d.date
