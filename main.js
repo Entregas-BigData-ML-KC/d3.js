@@ -23,7 +23,7 @@ let axisGroup = svg.append("g")
 let xAxisGroup = axisGroup
        .append("g").attr("id", "xAxisGroup")
        .attr('transform', `translate(
-             ${margin.left},
+             0,
              ${height - margin.bottom})`)
 
 let yAxisGroup = axisGroup
@@ -93,7 +93,7 @@ dataMap = d3.csv("data/ibex.csv").then(data => {
 
     // Crea la escala para el eje x (fechas)
     const x = d3.scaleTime()
-        .domain(d3.extent(data, d => new Date(d.date))) // Extremos de las fechas en los datos
+        .domain([d3.min(data,d => new Date(d.date)), d3.max(data, d => new Date (d.date))]) // Extremos de las fechas en los datos
         .range([margin.left, width - margin.right]);
 
     // Crea la escala para el eje y (valores numéricos)
@@ -145,7 +145,7 @@ dataMap = d3.csv("data/ibex.csv").then(data => {
         .attr("stroke", "steelblue")
         .attr("stroke-width", 2)
         .attr("d", d3.line()
-            .x(d => x(Date.parse(d.date)))
+            .x(d => x(new Date(d.date)))
             .y(d => y(parseFloat(d.close))))
 })
 
