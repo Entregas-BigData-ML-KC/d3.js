@@ -38,21 +38,31 @@ let yAxisGroup = axisGroup
 // let xAxis = d3.axisBottom().scale(x)
 // let yAxis = d3.axisLeft().scale(y)
 
+fecha = d3.timeFormat("%Y/%m/%d")
 
-let ManX = Date.parse('31/12/1970')
+
+
+let ManX = Date.parse('01/01/1970')
 let ManY = 0
 let MinX = Date.now()
 let MinY = 999999999999999
 data = d3.csv("data/ibex.csv").then(data => {
     data.map((d, index) => {
 
-      seconds_date = Date.parse(d.date)  
+      const [dia, mes, año] = d.date.split('/');
+      let dateObject = new Date(`${año}-${mes}-${dia}`)
+      d.date = fecha(dateObject)
+      dateObject = Date.parse(dateObject)
+      
+      console.log("DATE", dateObject)
 
-      if(d.date<MinX){
-            MinX = seconds_date
+      d.close = parseFloat(d.close)
+
+      if(dateObject<MinX){
+            MinX = dateObject
        }
-       if(d.date>ManX){
-            ManX = seconds_date
+       if(dateObject>ManX){
+            ManX = dateObject
        }
 
        if(d.close<MinY){
@@ -62,35 +72,38 @@ data = d3.csv("data/ibex.csv").then(data => {
             ManY = d.close
         }
 
-        // d.date     = d.date
+        
+        
+        //return d.date  = formats.time.timeParse("%d%m%Y")
         // d.close    = d.close
         // d.n = +d.n
     })
 
 const x = d3.scaleLinear()
-    .domain([MinX, ManX])
+    .domain([parseInt(MinX), parseInt(ManX)])
     // .range([rangeMin, rangeMax]);
-    .range([0, parseInt(ManX)]);
+    .range([0, width]);
 
 const y = d3.scaleLinear()
     .domain([parseInt(MinY), parseInt(ManY)])
     // .range([rangeMin, rangeMax]);
-    .range([0, parseInt(ManY)]);
+    .range([0, height]);
 
 let xAxis = d3.axisBottom().scale(x)
 let yAxis = d3.axisLeft().scale(y)
 
  // scale domain:
- x.domain(d3.extent(data.map(d => d.date))); 
+ x.domain(d3.extent(data.map(d => d.date))) 
  y.domain(d3.extent(data.map(d => d.close)))
  // call axes
  xAxisGroup.call(xAxis)
  yAxisGroup.call(yAxis)
 
 
-//  console.log("data",data)
+  console.log("data",data)
 
-//  arr = data.map(a =>{return Date.parse(a.date) })
+
+//  arr = data.map(a =>{console.log("type",typeof(a.close)) })
 //  console.log("arr",arr)
 
 
@@ -101,13 +114,14 @@ let yAxis = d3.axisLeft().scale(y)
 //  .y(d => y(parseInt(d.close)))
 //  ) 
 
-let elementGroup = svg.append("g").selectAll("path")
-.data([data]).attr("id", "elementGroup")
+let elementGroup = svg.append("g").selectAll("path").attr("id", "elementGroup") .attr('transform', `translate(
+    ${margin.left},
+    ${margin.top})`)
+    .data([data]).attr("id", "elementGroup")
 elementGroup.enter().append("path")
     .attr("d", d3.line()
     .x(d => (Date.parse(d.date)))
     .y(d => (d.close)))
-    .attr("fill", "none")
-    .attr("stroke", "blue")
+   
 })
 
