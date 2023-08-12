@@ -2,10 +2,10 @@
 const width = 800
 const height = 600
 const margin = {
-top: 10,
-bottom: 20,
-left: 40,
-right: 40
+    top: 10,
+    bottom: 20,
+    left: 40,
+    right: 40
 }
 
 // svg
@@ -59,19 +59,19 @@ dataMap = d3.csv("data/ibex.csv").then(data => {
 
       d.close = parseFloat(d.close)
 
-      if(dateObject<MinX){
-            MinX = dateObject
-       }
-       if(dateObject>ManX){
-            ManX = dateObject
-       }
+    //   if(dateObject<MinX){
+    //         MinX = dateObject
+    //    }
+    //    if(dateObject>ManX){
+    //         ManX = dateObject
+    //    }
 
-       if(d.close<MinY){
-            MinY = d.close
-        }
-        if(d.close>ManY){
-            ManY = d.close
-        }
+    //    if(d.close<MinY){
+    //         MinY = d.close
+    //     }
+    //     if(d.close>ManY){
+    //         ManY = d.close
+    //     }
 
         
         
@@ -93,19 +93,20 @@ dataMap = d3.csv("data/ibex.csv").then(data => {
 
     // Crea la escala para el eje x (fechas)
     const x = d3.scaleTime()
-    .domain(d3.extent(dataMap, d => (d.date))) // Extremos de las fechas en los datos
-    .range([margin.left, width - margin.right]);
+        .domain(d3.extent(data, d => new Date(d.date))) // Extremos de las fechas en los datos
+        .range([margin.left, width - margin.right]);
 
     // Crea la escala para el eje y (valores numéricos)
     const y = d3.scaleLinear()
-    .domain([0, d3.max(dataMap, d => d.close)]) // Rango de valores en los datos
-    .range([height - margin.bottom, margin.top]);
-
-    let xAxis = d3.axisBottom().scale(x)
+        .domain([0, d3.max(data, d => d.close)]) // Rango de valores en los datos
+        .range([height - margin.bottom, margin.top]);
+    
+    fecha = d3.timeFormat("%d/%m/%y")
+    let xAxis = d3.axisBottom(x).tickFormat(fecha)
     let yAxis = d3.axisLeft().scale(y)
 
     // scale domain:
-    x.domain(d3.extent(data.map(d => Date.parse(d.date)))) 
+    x.domain(d3.extent(data.map(d => new Date(d.date)))) 
     y.domain(d3.extent(data.map(d => d.close)))
     // call axes
     xAxisGroup.call(xAxis)
@@ -135,7 +136,9 @@ dataMap = d3.csv("data/ibex.csv").then(data => {
     //     .x(d => x((d.date)))
     //     .y(d => y(d.close)))
     
-
+    
+    
+    
     let elementGroup = svg.append("path")
         .datum(data)
         .attr("fill", "none")
