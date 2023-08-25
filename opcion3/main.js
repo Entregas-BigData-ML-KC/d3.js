@@ -36,10 +36,6 @@ let yAxisGroup = axisGroup
 
 fecha = d3.timeFormat("%Y/%m/%d")
 
-let ManX = Date.parse('01/01/1970')
-let ManY = 0
-let MinX = Date.now()
-let MinY = 999999999999999
 dataMap = d3.csv("data/ibex.csv").then(data => {
     data.map((d, index) => {
 
