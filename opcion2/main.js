@@ -70,7 +70,7 @@ dataMap = d3.csv("data/data.csv").then(data => {
         .attr('x', d => x(d.year))
         .attr('y', d => y((d.age)))
         .attr('width', x.bandwidth())
-        .attr('height', d => height - y((d.age))) - margin.bottom - margin.top
+        .attr('height', d => height - y((d.age)) - margin.bottom - margin.top) 
     
     const line = d3.line()
         .x(d => x(d.year))
